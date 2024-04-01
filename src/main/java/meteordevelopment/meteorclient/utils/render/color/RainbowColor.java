@@ -7,6 +7,7 @@ package meteordevelopment.meteorclient.utils.render.color;
 
 public class RainbowColor extends Color {
     private double speed;
+    private double saturation;
     private static final float[] hsb = new float[3];
 
     public RainbowColor() {
@@ -22,6 +23,15 @@ public class RainbowColor extends Color {
         return this;
     }
 
+    public double getSaturation() {
+        return saturation;
+    }
+
+    public RainbowColor setSaturation(double saturation) {
+        this.saturation = saturation;
+        return this;
+    }
+
     public RainbowColor getNext() {
         return getNext(1);
     }
@@ -29,7 +39,7 @@ public class RainbowColor extends Color {
     public RainbowColor getNext(double delta) {
         if (speed > 0) {
             java.awt.Color.RGBtoHSB(r, g, b, hsb);
-            int c = java.awt.Color.HSBtoRGB(hsb[0] + (float) (speed * delta), 1, 1);
+            int c = java.awt.Color.HSBtoRGB(hsb[0] + (float) (speed * delta), (float) saturation, 1);
 
             r = toRGBAR(c);
             g = toRGBAG(c);
@@ -44,6 +54,7 @@ public class RainbowColor extends Color {
         this.b = color.b;
         this.a = color.a;
         this.speed = color.speed;
+        this.saturation = color.saturation;
         return this;
     }
 

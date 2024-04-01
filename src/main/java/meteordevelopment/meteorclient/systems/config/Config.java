@@ -55,6 +55,15 @@ public class Config extends System<Config> {
         .build()
     );
 
+    public final Setting<Double> rainbowSaturation = sgVisual.add(new DoubleSetting.Builder()
+        .name("rainbow-saturation")
+        .description("The global rainbow saturation.")
+        .defaultValue(1)
+        .range(0, 1)
+        .sliderMax(1)
+        .build()
+    );
+
     public final Setting<Boolean> titleScreenCredits = sgVisual.add(new BoolSetting.Builder()
         .name("title-screen-credits")
         .description("Show Meteor credits on title screen")

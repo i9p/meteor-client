@@ -64,6 +64,7 @@ public class RainbowColors {
     @EventHandler
     private static void onTick(TickEvent.Post event) {
         GLOBAL.setSpeed(Config.get().rainbowSpeed.get() / 100);
+        GLOBAL.setSaturation(Config.get().rainbowSaturation.get());
         GLOBAL.getNext();
 
         for (Setting<SettingColor> setting : colorSettings) {
