@@ -25,6 +25,7 @@ import meteordevelopment.meteorclient.utils.render.RenderUtils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -232,6 +233,13 @@ public class Nametags extends Module {
 
     // Render
 
+    private final Setting<Boolean> textShadow = sgRender.add(new BoolSetting.Builder()
+        .name("shadow")
+        .description("Displays a shadow behind text.")
+        .defaultValue(true)
+        .build()
+    );
+
     private final Setting<SettingColor> background = sgRender.add(new ColorSetting.Builder()
         .name("background-color")
         .description("The color of the nametag background.")
@@ -336,7 +344,7 @@ public class Nametags extends Module {
     @EventHandler
     private void onRender2D(Render2DEvent event) {
         int count = getRenderCount();
-        boolean shadow = Config.get().customFont.get();
+        boolean shadow = textShadow.get();
 
         for (int i = count - 1; i > -1; i--) {
             Entity entity = entityList.get(i);
@@ -505,7 +513,16 @@ public class Nametags extends Module {
             for (int i = 0; i < 6; i++) {
                 ItemStack stack = getItem(player, i);
 
-                RenderUtils.drawItem(event.drawContext, stack, (int) x, (int) y, 2, true);
+                if (Config.get().customFont.get()) {
+                    RenderUtils.drawItem(event.drawContext, stack, (int) x, (int) y, 2, true);
+                } else {
+                    MatrixStack matrices = event.drawContext.getMatrices();
+                    matrices.push();
+                    matrices.scale((float) (1 / NametagUtils.scale), (float) (1 / NametagUtils.scale), 1);
+                    matrices.translate(-pos.x, -pos.y, -1000); // Translate z -1000 to behind text
+                    RenderUtils.drawItem(event.drawContext, stack, (int) x, (int) y, 2, true);
+                    matrices.pop();
+                }
 
                 if (stack.isDamageable() && itemDurability.get() != Durability.None) {
                     text.begin(0.75, false, true);
